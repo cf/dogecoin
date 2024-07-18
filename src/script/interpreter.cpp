@@ -13,7 +13,7 @@
 #include "pubkey.h"
 #include "script/script.h"
 #include "uint256.h"
-#include "mcl/bn_c384_256.h"
+#include <mcl/bn_c384_256.h>
 
 using namespace std;
 

@@ -148,11 +148,8 @@ struct Operator : public E {
 	template<class tag2, size_t maxBitSize2, template<class _tag, size_t _maxBitSize> class FpT>
 	static void pow(T& z, const T& x, const FpT<tag2, maxBitSize2>& y)
 	{
-		typedef FpT<tag2, maxBitSize2> F;
-		fp::getMpzAtType getMpzAt = fp::getMpzAtT<F>;
-		fp::getUnitAtType getUnitAt = fp::getUnitAtT<F>;
 		if (powVecGLV) {
-			powVecGLV(z, &x, &y, 1, getMpzAt, getUnitAt);
+			powVecGLV(z, &x, &y, 1);
 			return;
 		}
 		fp::Block b;
@@ -187,7 +184,7 @@ struct Operator : public E {
 		powArray(z, x, gmp::getUnit(y), gmp::getUnitSize(y), y < 0);
 	}
 protected:
-	static bool (*powVecGLV)(T& z, const T *xVec, const void *yVec, size_t yn, fp::getMpzAtType getMpzAt, fp::getUnitAtType getUnitAt);
+	static bool (*powVecGLV)(T& z, const T *xVec, const void *yVec, size_t yn);
 	static void powArray(T& z, const T& x, const Unit *y, size_t yn, bool isNegative = false)
 	{
 		while (yn > 0 && y[yn - 1] == 0) {
@@ -198,7 +195,7 @@ protected:
 			return;
 		}
 		const size_t w = 4;
-		const size_t N = 1 << w;
+		const size_t n = 1 << w;
 		uint8_t idxTbl[sizeof(T) * 8 / w];
 		mcl::fp::BitIterator<Unit> iter(y, yn);
 		size_t idxN = 0;
@@ -207,9 +204,9 @@ protected:
 			idxTbl[idxN++] = iter.getNext(w);
 		}
 		assert(idxN > 0);
-		T tbl[N];
+		T tbl[n];
 		tbl[1] = x;
-		for (size_t i = 2; i < N; i++) {
+		for (size_t i = 2; i < n; i++) {
 			tbl[i] = tbl[i-1] * x;
 		}
 		uint32_t idx = idxTbl[idxN - 1];
@@ -230,7 +227,7 @@ protected:
 };
 
 template<class T, class E>
-bool (*Operator<T, E>::powVecGLV)(T& z, const T *xVec, const void *yVec, size_t yn, fp::getMpzAtType getMpzAt, fp::getUnitAtType getUnitAt);
+bool (*Operator<T, E>::powVecGLV)(T& z, const T *xVec, const void *yVec, size_t yn);
 
 /*
 	T must have save and load
@@ -314,5 +311,5 @@ size_t invVec(T *y, const T* x, size_t n, size_t N = 256)
 	return invVecT<T>(y, in, n, N);
 }
 
-} // mcl::fp
+} // mcl
 

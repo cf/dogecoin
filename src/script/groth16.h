@@ -1,6 +1,6 @@
 #ifndef BITCOIN_CRYPTO_GROTH16_H
 #define BITCOIN_CRYPTO_GROTH16_H
-#include "mcl/bn_c384_256.h"
+#include <mcl/bn_c384_256.h>
 #include <vector>
 
 
@@ -58,12 +58,10 @@ public:
     CGROTH16()
     {
 
-            mclBn_init(MCL_BLS12_381, MCLBN_COMPILED_TIME_VAR);
-        /*
         if(!CGROTH16::library_initialized){
             CGROTH16::library_initialized = true;
             mclBn_init(MCL_BLS12_381, MCLBN_COMPILED_TIME_VAR);
-        }*/
+        }
     };
 
     int DeserializeVerifierData(const char *data, size_t length);

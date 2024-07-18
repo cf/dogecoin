@@ -10,6 +10,8 @@ mcl is a library for pairing-based cryptography,
 which supports the optimal Ate pairing over BN curves and BLS12-381 curves.
 
 # News
+- mulEach with AVX-512 IFMA is 2.5 times faster than G1::mul on BLS12-381
+- mulVec (multi scalar multiplication) with AVX-512 IFMA is 1.4 times faster on Xeon w9-3495X
 - a little performance improvement of G1::mulVec of BLS12-381
 - improve performance of Fr::inv on M1 mac
 - add mcl::bn::isValidGT(x) and mclBnGT_isValid(x) to check x in GT for x in Fp12.
@@ -110,13 +112,17 @@ cmake .. -DCMAKE_CXX_COMPILER=clang++
 make
 ```
 
-For Visual Studio,
+For Visual Studio, (REMARK : It is not maintained; use the vcxproj file.)
 ```
 mkdir build
 cd build
 cmake .. -A x64
 msbuild mcl.sln /p:Configuration=Release /m
 ```
+
+## How to build a static library with Visual Studio
+Open `mcl.sln` and build it.
+`src/proj/lib/lib.vcxproj` is to build a static library `lib/mcl.lib` which is defined `MCL_MAX_BIT_SIZE=384`.
 
 ## options
 

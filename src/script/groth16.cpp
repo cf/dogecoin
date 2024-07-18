@@ -1,4 +1,5 @@
 #include "groth16.h"
+#include <mcl/bn_c384_256.h>
 #include <string.h>
 #include <vector>
 /*
@@ -226,7 +227,7 @@ bool CGROTH16::Verify()
     serialize_groth16_vk(&vk, data);
     printHexChar("verifier_data_hex_v: [", data, 480, "]\n");
     int result = verify_groth16_proof(&vk, &proof, public_inputs);
-    
+
     return result == 1;
 }
 
@@ -289,5 +290,5 @@ int CGROTH16::SetProofDataCompact(
     memcpy(data + G16_FP_SIZE_BYTES*4+G16_FR_SIZE_BYTES, public_input_1->data(), G16_FR_SIZE_BYTES);
     printHexChar("proof_data_hex: ", data, 256, "\n");
     return DeserializeProofData(data, 256);
-    
+
 }

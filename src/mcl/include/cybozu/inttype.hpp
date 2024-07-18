@@ -62,6 +62,7 @@
 	#else
 		#define CYBOZU_ALLOCA(x) __builtin_alloca(x)
 	#endif
+	#define CYBOZU_ALIGNED_ALLOCA(x, align) (void*)(size_t(CYBOZU_ALLOCA((x)+(align)-1)) & ~(size_t(align)-1))
 #endif
 #ifndef CYBOZU_NUM_OF_ARRAY
 	#define CYBOZU_NUM_OF_ARRAY(x) (sizeof(x) / sizeof(*x))
@@ -74,16 +75,12 @@
 	#endif
 #endif
 #ifndef CYBOZU_ASSUME
-	#ifdef NDEBUG
-		#if defined(__clang__)
-			#define CYBOZU_ASSUME(x) __builtin_assume(x)
-		#elif defined(_MSC_VER) || defined(__ICC)
-			#define CYBOZU_ASSUME(x) __assume(x)
-		#else
-			#define CYBOZU_ASSUME(x) if (!(x)) { __builtin_unreachable(); }
-		#endif
+	#if defined(__clang__)
+		#define CYBOZU_ASSUME(x)  assert(x); __builtin_assume(x)
+	#elif defined(_MSC_VER) || defined(__ICC)
+		#define CYBOZU_ASSUME(x)  assert(x); __assume(x)
 	#else
-		#define CYBOZU_ASSUME(x) assert(x)
+		#define CYBOZU_ASSUME(x) assert(x); if (!(x)) { __builtin_unreachable(); }
 	#endif
 #endif
 
